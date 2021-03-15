@@ -22,14 +22,14 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            MIGRATION = $(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-              echo "${MIGRATION}" 
-              if (( $MIGRATION == 1 ));
-              then
-                cd ~/project/backend
-                npm i
-                npm run migration:revert
-              fi
+            export MIGRATION=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo "${MIGRATION}" 
+            if (( $MIGRATION == 1 ));
+            then
+              cd ~/project/backend
+              npm i
+              npm run migration:revert
+            fi
             
 jobs:
   build-frontend:
