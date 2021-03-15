@@ -274,6 +274,17 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> .env
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> .env
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> .env
+            npm i
+            npm audit fix
+            npm run build
+            rm -rf node_modules 
+            rm -rf dist
+            rm -rf test
+            rm README.md 
+            mkdir -p ../.circleci/ansible/roles/deploy/files
+            cd ../.circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy.yml
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -288,17 +299,14 @@ jobs:
             apk add --update tar gzip nodejs npm curl
             pip install awscli
       - run:
-          name: Get backend url
+          name: Get backend url and smoke test.
           command: |
             export BACKEND_IP=$(aws ec2 --region us-east-1 describe-instances \
                   --filters Name=instance-state-name,Values=running Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} \
                   --query 'Reservations[*].Instances[*].PublicIpAddress' \
                   --output text)
             export BACKEND_URL="http://${BACKEND_IP}:3030/api/status"
-            echo ${BACKEND_URL}
-      - run:
-          name: Backend smoke test.
-          command: |
+            echo "Backend url is ${BACKEND_URL}"
             curl ${BACKEND_URL}
             if curl -s ${BACKEND_URL} | grep "ok"
             then
