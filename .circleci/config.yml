@@ -75,11 +75,11 @@ jobs:
           name: Test front end
           command: |
             cd frontend
+            npm i
             npm run test
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-test
-      - checkout
                 
   test-backend:
     docker:
@@ -92,11 +92,11 @@ jobs:
           name: Test back end
           command: |
             cd backend
+            npm i
             npm run test
       - save_cache:
           paths: [backend/node_modules]
           key: backend-test
-      - checkout
             
   scan-frontend:
     docker:
