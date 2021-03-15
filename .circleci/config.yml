@@ -138,6 +138,10 @@ jobs:
     steps:
       - checkout
       - run:
+          name: dependencies
+          command: |
+            yum install tar gzip -y
+      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
