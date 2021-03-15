@@ -302,7 +302,7 @@ jobs:
             curl ${BACKEND_URL}
             if curl -s ${BACKEND_URL} | grep "ok"
             then
-              exit 1
+              exit 0
             else
               exit 1
             fi      
